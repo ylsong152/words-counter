@@ -2,7 +2,7 @@ package sdf.day04;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Optional;
+import java.util.stream.Stream;
 
 public class WordCounter {
 
@@ -11,19 +11,14 @@ public class WordCounter {
       FileReader fr = new FileReader(args[0]);
       BufferedReader br = new BufferedReader(fr);
 
-      Optional <Integer> opt = br.lines()
+      long count = br.lines()
          .map(line -> line.trim().replaceAll("[^\\sa-zA-Z0-9]", ""))
          .filter(line -> !line.isEmpty())
-         .map(line -> line.split(" ").length)
-         .reduce((acc, next) -> acc + next);
+         .map(line -> line.split(" "))
+         .flatMap(words -> Stream.of(words))
+         .count();
             
-
-      if (opt.isPresent()) {
-         int count = opt.get();
-         System.out.printf("Word Count: %d\n", count);
-      } else {
-         System.out.println("No result");
-      }
+      System.out.println(count);
 
       br.close();
       
